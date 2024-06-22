@@ -40,13 +40,15 @@ def project_admin(admin_site):
 def test_project_admin_list_display(project_admin):         
     assert project_admin.list_display == ('title', 'technology', 'description')
 
+# Test for the project_detail view to ensure that it returns a 200 status code and contains the project title in the response content
 @pytest.mark.django_db
 def test_project_detail_view(client, project):
     url = reverse('project_detail', kwargs={'pk': project.pk})
     response = client.get(url)
     assert response.status_code == 200
     assert project.title in response.content.decode()
-    
+
+# Fixture to create a sample project for testing    
 @pytest.fixture
 def project():
     return Project.objects.create(
