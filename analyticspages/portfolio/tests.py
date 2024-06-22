@@ -39,3 +39,19 @@ def project_admin(admin_site):
 @pytest.mark.django_db
 def test_project_admin_list_display(project_admin):         
     assert project_admin.list_display == ('title', 'technology', 'description')
+
+@pytest.mark.django_db
+def test_project_detail_view(client, project):
+    url = reverse('project_detail', kwargs={'pk': project.pk})
+    response = client.get(url)
+    assert response.status_code == 200
+    assert project.title in response.content.decode()
+    
+@pytest.fixture
+def project():
+    return Project.objects.create(
+        title='Test Project',
+        description='Test Description',
+        technology='Test Technology',
+        image='images/test.jpg'
+    )
