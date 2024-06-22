@@ -9,7 +9,10 @@
     <h1>Projects</h1>
     <ul>
         {% for project in projects %}
-            <li>{{ project.title }}: {{ project.technology }}</li>
+            <li>
+                <a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a>
+                : {{ project.technology }}
+            </li>
         {% endfor %}
     </ul>
 </body>
