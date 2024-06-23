@@ -1,19 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects</title>
-</head>
-<body>
-    <h1>Projects</h1>
-    <ul>
-        {% for project in projects %}
-            <li>
-                <a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a>
-                : {{ project.technology }}
-            </li>
-        {% endfor %}
+{% extends "portfolio/base.html" %}
+
+{% block title %}Project List{% endblock title %}
+
+{% block content %}
+<h2>Projects</h2>
+<ul>
+    {% for project in projects %}
+        <li>
+            <a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a>
+            : {{ project.technology }}
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" style="width: 50px; height: 50px;">
+        </li>
+    {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock content %}
