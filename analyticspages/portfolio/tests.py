@@ -57,3 +57,27 @@ def project():
         technology='Test Technology',
         image='images/test.jpg'
     )
+
+@pytest.mark.django_db
+def test_static_files_served(client):
+    url = reverse('project_list')   # Use the URL of a view that serves static files
+    response = client.get(url)
+    assert response.status_code == 200
+    assert 'style.css' in response.content.decode()  # Check if the CSS file is included in the response content
+
+@pytest.mark.django_db
+def test_media_files_served(client, project):
+    # Create a test project with an image to test serving media files
+    url = reverse('project_detail', kwargs={'pk': project.pk})
+    response = client.get(url)
+    assert response.status_code == 200
+    assert project.image.url in response.content.decode()  # Check if the image URL is included in the response content
+
+@pytest.fixture
+def project():
+    return Project.objects.create(
+        title='Test Project',
+        description='Test Description',
+        technology='Test Technology',
+        image='images/housing.jpg'  # Ensure the image file exists in the 'media/images' directory of the project
+    )
