@@ -23,7 +23,7 @@ Analytics Pages is a Django-based web application designed to showcase data scie
 1. **Clone the Repository**:
 
     ```bash
-    git clone https://github.com/yourusername/analyticspages.git
+    git clone https://github.com/surajwate/analyticspages.git
     cd analyticspages
     ```
 
