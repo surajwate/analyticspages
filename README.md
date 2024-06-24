@@ -77,11 +77,14 @@ pytest
 ```
 
 ## Contributing
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
+We welcome contributions to this project! Here are some ways you can get involved:
+
+1. **Report Issues**: If you find a bug or have a feature request, please open an issue.
+2. **Submit Pull Requests**: If you'd like to contribute code, please fork the repository and submit a pull request.
+3. **Join the Discussion**: Have a question or want to share an idea? Join our [GitHub Discussions](https://github.com/your-username/analyticspages/discussions) and engage with the community.
+
+## Documentation
+For more detailed documentation, visit our [Wiki](https://github.com/your-username/analyticspages/wiki).
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
