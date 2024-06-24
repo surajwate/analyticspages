@@ -1,90 +1,119 @@
 # Analytics Pages
 
 ## Description
+
 Analytics Pages is a Django-based web application designed to showcase data science projects. The application allows users to view, add, and manage projects, with features for user authentication and project details.
 
 ## Features
+
 - User authentication (registration, login, logout)
 - Add, update, and view data science projects
-- Admin interface for managing projects
-- Dockerized setup for development and deployment
-- PostgreSQL database
+- Responsive design with Bootstrap
+- Integration with PostgreSQL using Docker
+- Continuous integration with GitHub Actions
 
 ## Prerequisites
+
 - Python 3.9+
-- Docker and Docker Compose
+- Docker
+- Docker Compose
 
-## Setup Instructions
+## Installation
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-username/analyticspages.git
-cd analyticspages
-```
+1. **Clone the Repository**:
 
-### 2. Create a Virtual Environment and Install Dependencies
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-pip install -r requirements.txt
-```
+    ```bash
+    git clone https://github.com/yourusername/analyticspages.git
+    cd analyticspages
+    ```
 
-### 3. Configure Environment Variables
-Create a `.env` file in the root directory and add the following:
-```
-SECRET_KEY=your-secret-key
-DEBUG=1
-ALLOWED_HOSTS=localhost,127.0.0.1
-POSTGRES_DB=analyticspages
-POSTGRES_USER=your_db_user
-POSTGRES_PASSWORD=your_db_password
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-```
+2. **Create a `.env` File**:
 
-### 4. Run the Application Locally
-```bash
-python manage.py migrate
-python manage.py runserver
-```
+    Create a `.env` file in the root directory with the following contents:
 
-Open your web browser and navigate to `http://127.0.0.1:8000/`.
+    ```plaintext
+    SECRET_KEY=your-secret-key
+    DEBUG=True
+    ALLOWED_HOSTS=localhost,127.0.0.1
+    POSTGRES_DB=yourdbname
+    POSTGRES_USER=yourusername
+    POSTGRES_PASSWORD=yourpassword
+    DATABASE_URL=postgres://yourusername:yourpassword@db:5432/yourdbname
+    ```
 
-## Docker Setup
+3. **Create and Activate Virtual Environment (if not using Docker)**:
 
-### 1. Build and Start Docker Containers
-```bash
-docker-compose up --build -d
-```
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
 
-### 2. Apply Database Migrations
-```bash
-docker-compose exec web python manage.py migrate
-```
+4. **Install Dependencies**:
 
-### 3. Create a Superuser (Optional)
-```bash
-docker-compose exec web python manage.py createsuperuser
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### 4. Access the Application
-- Application: [http://localhost:8000](http://localhost:8000)
-- Admin Panel: [http://localhost:8000/admin](http://localhost:8000/admin)
+## Running the Project with Docker
+
+1. **Build and Run Containers**:
+
+    ```bash
+    docker-compose up --build
+    ```
+
+2. **Apply Migrations**:
+
+    ```bash
+    docker-compose exec web python manage.py migrate
+    ```
+
+3. **Create a Superuser**:
+
+    ```bash
+    docker-compose exec web python manage.py createsuperuser
+    ```
+
+4. **Access the Application**:
+
+    Open your web browser and navigate to `http://localhost:8000`.
 
 ## Running Tests
-```bash
-pytest
-```
 
-## Contributing
-We welcome contributions to this project! Here are some ways you can get involved:
+1. **Run Tests with Docker**:
 
-1. **Report Issues**: If you find a bug or have a feature request, please open an issue.
-2. **Submit Pull Requests**: If you'd like to contribute code, please fork the repository and submit a pull request.
-3. **Join the Discussion**: Have a question or want to share an idea? Join our [GitHub Discussions](https://github.com/your-username/analyticspages/discussions) and engage with the community.
+    ```bash
+    docker-compose exec web pytest
+    ```
 
-## Documentation
-For more detailed documentation, visit our [Wiki](https://github.com/your-username/analyticspages/wiki).
+2. **Run Tests Locally**:
+
+    ```bash
+    pytest
+    ```
+
+## Continuous Integration
+
+We use GitHub Actions for continuous integration. The CI pipeline runs tests and checks for code quality on every push and pull request. The configuration is defined in the `.github/workflows/ci.yml` file.
+
+## Community and Support
+
+- **GitHub Discussions**: Join the conversation in our [Discussions](https://github.com/surajwate/analyticspages/discussions) section.
+- **Wiki**: Check out our [Wiki](https://github.com/surajwate/analyticspages/wiki) for detailed documentation and guides.
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-branch`)
+3. Make your changes
+4. Commit your changes (`git commit -m 'Add new feature'`)
+5. Push to the branch (`git push origin feature-branch`)
+6. Open a pull request
+
+---
+
+Feel free to suggest improvements or contribute to the project!
