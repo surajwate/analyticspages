@@ -30,16 +30,19 @@ jobs:
 
     - name: Install dependencies
       run: |
+        cd analyticspages  # Add this line to navigate to the main folder
         python -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
 
     - name: Run migrations
       run: |
+        cd analyticspages  # Add this line to navigate to the main folder
         source venv/bin/activate
         python manage.py migrate
 
     - name: Run tests
       run: |
+        cd analyticspages  # Add this line to navigate to the main folder
         source venv/bin/activate
         pytest
