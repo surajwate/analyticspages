@@ -11,8 +11,21 @@
 <body>
     <header>
         <h1>Analytics Pages</h1>
+        {% if user.is_authenticated %}
+            <form action="{% url "logout" %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% endif %}
     </header>
     <main>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% block content %}
         {% endblock content %}
     </main>
