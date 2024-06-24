@@ -115,5 +115,5 @@ def test_logout(client, django_user_model):
     testuser = django_user_model.objects.create_user(username='testuser', password='complexpassword123')
     client.login(username='testuser', password='complexpassword123')
     url = reverse('logout')
-    response = client.get(url)
+    response = client.post(url)
     assert response.status_code == 302
