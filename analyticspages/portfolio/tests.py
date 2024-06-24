@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.admin.sites import AdminSite
 from .admin import ProjectAdmin
 from django.contrib.auth.models import User
+from .forms import ProjectForm
 
 # Test for creating a project instance and verifying its attributes
 @pytest.mark.django_db
@@ -117,3 +118,64 @@ def test_logout(client, django_user_model):
     url = reverse('logout')
     response = client.post(url)
     assert response.status_code == 302
+
+@pytest.mark.django_db
+def test_project_create_view(client):
+    url = reverse('project_create')
+    response = client.get(url)
+    assert response.status_code == 200
+    data = {
+        'title': 'Test Project',
+        'description': 'Test Description',
+        'technology': 'Django',
+        'start_date': '2021-01-01',
+        'end_date': '2021-01-31',
+        'github_link': 'https://github.com/test/project',
+        'live_demo_link': 'https://testproject.com',
+        # 'image': '',
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert Project.objects.filter(title='Test Project').exists()
+
+@pytest.mark.django_db
+def test_project_update_view(client, project):
+    project = Project.objects.create(
+        title = 'Old Project',
+        description = 'Old Description',
+        technology = 'Old Technology',
+        start_date = '2021-01-01',
+    )
+    url = reverse('project_update', kwargs={'pk': project.pk})
+    response = client.get(url)
+    assert response.status_code == 200
+    data = {
+        'title': 'Updated Project',
+        'description': 'Updated Description',
+        'technology': 'Updated Tech',
+        'start_date': '2021-02-01',
+        'end_date': '2021-02-28',
+        'github_link': 'https://github.com/test/updatedproject',
+        'live_demo_link': 'https://updatedproject.com',
+        # 'image': '',
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    project.refresh_from_db()
+    assert project.title == 'Updated Project'
+
+@pytest.mark.django_db
+def test_project_form():
+    data = {
+        'title': 'Test Project',
+        'description': 'Test Description',
+        'technology': 'Django',
+        'start_date': '2021-01-01',
+        'end_date': '2021-01-31',
+        'github_link': 'https://github.com/test/project',
+        'live_demo_link': 'https://testproject.com',
+    }
+    form = ProjectForm(data=data)
+    assert form.is_valid()
+    project = form.save()
+    assert Project.objects.filter(title='Test Project').exists()
