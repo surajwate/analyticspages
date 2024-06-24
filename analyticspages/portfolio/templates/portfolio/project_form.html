@@ -1,0 +1,12 @@
+{% extends "portfolio/base.html" %}
+
+{% block title %}{{ form.instance.pk|yesno:"Update Project, Add Project" }}{% endblock title %}
+
+{% block content %}
+    <h2>{{ form.instance.pk|yesno:"Update Project, Add Project" }}</h2>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{{ form.instance.pk|yesno:"Update, Create" }}</button>
+    </form>
+{% endblock content %}

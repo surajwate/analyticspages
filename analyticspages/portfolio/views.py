@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Project
 from django.contrib.auth.views import LoginView, LogoutView # Import the `LoginView` and `LogoutView` classes to create views for user login and logout
 from django.urls import reverse_lazy    # Import the `reverse_lazy` function to redirect users to a URL after successful login
@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView    # Import the `CreateView` cl
 from django.contrib import messages # Import the `messages` framework to display messages to users
 from django.contrib.auth.mixins import LoginRequiredMixin    # Import the `LoginRequiredMixin` class to restrict access to authenticated users
 from django.views.generic import TemplateView   # Import the `TemplateView` class to create a view for user profile
+from .forms import ProjectForm
 
 # Function-based view to display a list of all projects
 def project_list(request):
@@ -43,3 +44,23 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'portfolio/profile.html'
 
     
+def project_create(request):
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('project_list')
+    else:
+        form = ProjectForm()
+    return render(request, 'portfolio/project_form.html', {'form': form})
+
+def project_update(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('project_detail', pk = project.pk)
+    else:
+        form = ProjectForm(instance=project)
+    return render(request, 'portfolio/project_form.html', {'form': form})
