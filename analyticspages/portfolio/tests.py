@@ -239,3 +239,19 @@ def test_project_unique_title():
             description='Another unique with same title.',
             technology='Flask',
         )
+
+@pytest.mark.django_db
+def test_project_form_valid_data():
+    form = ProjectForm(data={
+        'title': 'Valid Project',
+        'description': 'This is a valid project description.',
+        'technology': 'Python',
+        'start_date': '2024-01-01',
+        'end_date': '2024-01-31',
+        'github_link': 'https://github.com/valid/project',
+        'live_demo_link': 'https://validproject.com',
+        })
+    assert form.is_valid()
+    project = form.save()
+    assert project.title == 'Valid Project'
+    assert project.description == 'This is a valid project description.'
