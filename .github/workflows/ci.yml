@@ -1,48 +1,58 @@
-name: CI Pipeline
+name: Django CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     services:
-      db:
+      postgres:
         image: postgres:latest
         env:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U ${{ secrets.POSTGRES_USER }}" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=5
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: 0
 
     steps:
-    - name: Checkout code
+    - name: Check out the repository
       uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: 3.9
 
     - name: Install dependencies
       run: |
-        cd analyticspages  # Add this line to navigate to the main folder
-        python -m venv venv
-        source venv/bin/activate
+        cd analyticspages
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run migrations
+    - name: Apply migrations
       run: |
-        cd analyticspages  # Add this line to navigate to the main folder
-        source venv/bin/activate
+        cd analyticspages
         python manage.py migrate
 
     - name: Run tests
       run: |
-        cd analyticspages  # Add this line to navigate to the main folder
-        source venv/bin/activate
+        cd analyticspages
         pytest
