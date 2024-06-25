@@ -277,3 +277,24 @@ def test_project_list_view_pagination(client):
     assert 'Projects' in response.content.decode()
     assert isinstance(response.context['page_obj'], Page)
     assert len(response.context['page_obj']) <=3  # Assuming pagination is set to 3 items per page
+
+@pytest.mark.django_db
+def test_project_detail_view(client):
+    project = Project.objects.create(
+        title='Test Project',
+        description='Test Description',
+        technology='Django',
+        start_date='2021-01-01',
+        end_date='2021-01-31',
+        github_link='https://github/test/project',
+        live_demo_link='https://testproject.com',
+    )
+    url = reverse('project_detail', kwargs={'pk': project.pk})
+    response = client.get(url)
+    assert response.status_code == 200
+    assert 'Test Project' in response.content.decode()
+    assert 'Test Description' in response.content.decode()
+    assert 'Django' in response.content.decode()
+    assert 'https://github/test/project' in response.content.decode()
+    assert 'https://testproject.com' in response.content.decode()
+    
