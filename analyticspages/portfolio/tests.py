@@ -6,6 +6,7 @@ from .admin import ProjectAdmin
 from django.contrib.auth.models import User
 from .forms import ProjectForm
 from django.core.paginator import Page
+from django.db import IntegrityError
 
 # Test for creating a project instance and verifying its attributes
 @pytest.mark.django_db
@@ -224,3 +225,76 @@ def test_technology_filter_retention(client):
     assert 'Bike Sharing' in response.content.decode()
     assert 'selected>Python</option>' in response.content.decode()
     assert 'MNIST' not in response.content.decode()
+
+@pytest.mark.django_db
+def test_project_unique_title():
+    Project.objects.create(
+        title='Unique Project',
+        description='A unique project description.',
+        technology='Django',
+    )
+    with pytest.raises(IntegrityError):
+        Project.objects.create(
+            title='Unique Project',
+            description='Another unique with same title.',
+            technology='Flask',
+        )
+
+@pytest.mark.django_db
+def test_project_form_valid_data():
+    form = ProjectForm(data={
+        'title': 'Valid Project',
+        'description': 'This is a valid project description.',
+        'technology': 'Python',
+        'start_date': '2024-01-01',
+        'end_date': '2024-01-31',
+        'github_link': 'https://github.com/valid/project',
+        'live_demo_link': 'https://validproject.com',
+        })
+    assert form.is_valid()
+    project = form.save()
+    assert project.title == 'Valid Project'
+    assert project.description == 'This is a valid project description.'
+
+@pytest.mark.django_db
+def test_project_form_invalid_data():
+    form = ProjectForm(data={})
+    assert not form.is_valid()
+    assert 'title' in form.errors
+    assert 'description' in form.errors
+
+@pytest.mark.django_db
+def test_project_list_view_pagination(client):
+    for i in range(10):
+        Project.objects.create(
+            title=f'Project {i}',
+            description=f'Description {i}',
+            technology='Django',
+        )
+    url = reverse('project_list')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert 'Projects' in response.content.decode()
+    assert isinstance(response.context['page_obj'], Page)
+    assert len(response.context['page_obj']) <=3  # Assuming pagination is set to 3 items per page
+
+@pytest.mark.django_db
+def test_project_detail_view(client):
+    project = Project.objects.create(
+        title='Test Project',
+        description='Test Description',
+        technology='Django',
+        start_date='2021-01-01',
+        end_date='2021-01-31',
+        github_link='https://github/test/project',
+        live_demo_link='https://testproject.com',
+    )
+    url = reverse('project_detail', kwargs={'pk': project.pk})
+    response = client.get(url)
+    assert response.status_code == 200
+    assert 'Test Project' in response.content.decode()
+    assert 'Test Description' in response.content.decode()
+    assert 'Django' in response.content.decode()
+    assert 'https://github/test/project' in response.content.decode()
+    assert 'https://testproject.com' in response.content.decode()
+    
