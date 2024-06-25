@@ -28,11 +28,6 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v2  # Use checkout action without node-version
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2  # Add this step to set up Node.js
-      with:
-        node-version: '20'
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
