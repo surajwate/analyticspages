@@ -9,14 +9,32 @@ from django.contrib.auth.mixins import LoginRequiredMixin    # Import the `Login
 from django.views.generic import TemplateView   # Import the `TemplateView` class to create a view for user profile
 from .forms import ProjectForm
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 # Function-based view to display a list of all projects
 def project_list(request):
+    query = request.GET.get('q')
+    technology_filter = request.GET.get('technology')
     projects = Project.objects.all().order_by('start_date')
+    if query:
+        projects = projects.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(technology__icontains=query)
+        )
+    if technology_filter:
+        projects = projects.filter(technology__iexact=technology_filter)
     paginator = Paginator(projects, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'portfolio/project_list.html', {'page_obj': page_obj, 'projects': page_obj.object_list})
+    technologies = Project.objects.values_list('technology', flat=True).distinct()
+    return render(request, 'portfolio/project_list.html', {
+        'page_obj': page_obj,
+        'projects': page_obj.object_list,
+        'query': query,
+        'technology_filter': technology_filter,
+        'technologies': technologies
+    })
 
 # Function-based view to display the details of a specific project
 def project_detail(request, pk):
