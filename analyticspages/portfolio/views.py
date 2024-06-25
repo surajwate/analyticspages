@@ -8,11 +8,15 @@ from django.contrib import messages # Import the `messages` framework to display
 from django.contrib.auth.mixins import LoginRequiredMixin    # Import the `LoginRequiredMixin` class to restrict access to authenticated users
 from django.views.generic import TemplateView   # Import the `TemplateView` class to create a view for user profile
 from .forms import ProjectForm
+from django.core.paginator import Paginator
 
 # Function-based view to display a list of all projects
 def project_list(request):
     projects = Project.objects.all()
-    return render(request, 'portfolio/project_list.html', {'projects': projects})
+    paginator = Paginator(projects, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'portfolio/project_list.html', {'page_obj': page_obj, 'projects': page_obj.object_list})
 
 # Function-based view to display the details of a specific project
 def project_detail(request, pk):
