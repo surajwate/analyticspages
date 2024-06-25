@@ -13,8 +13,8 @@ from django.db.models import Q
 
 # Function-based view to display a list of all projects
 def project_list(request):
-    query = request.GET.get('q')
-    technology_filter = request.GET.get('technology')
+    query = request.GET.get('q', '')   # Get the search query from the URL, default to an empty string if 'q' is not found
+    technology_filter = request.GET.get('technology', '')  # Get the technology filter from the URL, default to an empty string if 'technology' is not found
     projects = Project.objects.all().order_by('start_date')
     if query:
         projects = projects.filter(
