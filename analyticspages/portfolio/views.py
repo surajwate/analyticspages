@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 
 # Function-based view to display a list of all projects
 def project_list(request):
-    projects = Project.objects.all()
+    projects = Project.objects.all().order_by('start_date')
     paginator = Paginator(projects, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
