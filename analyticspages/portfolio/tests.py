@@ -255,3 +255,25 @@ def test_project_form_valid_data():
     project = form.save()
     assert project.title == 'Valid Project'
     assert project.description == 'This is a valid project description.'
+
+@pytest.mark.django_db
+def test_project_form_invalid_data():
+    form = ProjectForm(data={})
+    assert not form.is_valid()
+    assert 'title' in form.errors
+    assert 'description' in form.errors
+
+@pytest.mark.django_db
+def test_project_list_view_pagination(client):
+    for i in range(10):
+        Project.objects.create(
+            title=f'Project {i}',
+            description=f'Description {i}',
+            technology='Django',
+        )
+    url = reverse('project_list')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert 'Projects' in response.content.decode()
+    assert isinstance(response.context['page_obj'], Page)
+    assert len(response.context['page_obj']) <=3  # Assuming pagination is set to 3 items per page
