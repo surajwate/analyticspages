@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - ci-fixed
   pull_request:
     branches:
       - main
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
   test:
