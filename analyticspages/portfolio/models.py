@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 class Project(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     description = models.TextField()
     technology = models.CharField(max_length=100)
     image = models.ImageField(upload_to='images/', null=True, blank=True)

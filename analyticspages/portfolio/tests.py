@@ -6,6 +6,7 @@ from .admin import ProjectAdmin
 from django.contrib.auth.models import User
 from .forms import ProjectForm
 from django.core.paginator import Page
+from django.db import IntegrityError
 
 # Test for creating a project instance and verifying its attributes
 @pytest.mark.django_db
@@ -224,3 +225,17 @@ def test_technology_filter_retention(client):
     assert 'Bike Sharing' in response.content.decode()
     assert 'selected>Python</option>' in response.content.decode()
     assert 'MNIST' not in response.content.decode()
+
+@pytest.mark.django_db
+def test_project_unique_title():
+    Project.objects.create(
+        title='Unique Project',
+        description='A unique project description.',
+        technology='Django',
+    )
+    with pytest.raises(IntegrityError):
+        Project.objects.create(
+            title='Unique Project',
+            description='Another unique with same title.',
+            technology='Flask',
+        )
