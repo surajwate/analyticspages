@@ -26,12 +26,19 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4  
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.9'
+
+    - name: Wait for Postgres to be ready
+      run: |
+        until pg_isready -h localhost -p 5432; do
+          echo "Waiting for postgres container..."
+          sleep 5
+        done
 
     - name: Set environment variables
       run: |
@@ -47,12 +54,10 @@ jobs:
 
     - name: Apply migrations
       run: |
-        set -e
         cd analyticspages
         python manage.py migrate
 
     - name: Run tests
       run: |
-        set -e
         cd analyticspages
         pytest --maxfail=1 --disable-warnings -v
