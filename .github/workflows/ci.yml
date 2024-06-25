@@ -47,10 +47,12 @@ jobs:
 
     - name: Apply migrations
       run: |
+        set -e
         cd analyticspages
         python manage.py migrate
 
     - name: Run tests
       run: |
+        set -e
         cd analyticspages
-        pytest --maxfail=1 --disable-warnings -v || true
+        pytest --maxfail=1 --disable-warnings -v
