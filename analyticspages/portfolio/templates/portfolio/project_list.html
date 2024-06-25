@@ -3,33 +3,37 @@
 {% block title %}Project List{% endblock title %}
 
 {% block content %}
-<h2>Projects</h2>
-<ul>
-    {% for project in projects %}
-        <li>
+<h2 class="my-4">Projects</h2>
+<form method="get" action="{% url 'project_list' %}" class="form-inline mb-4">
+    <input type="text" name="q" value="{{ query|default_if_none:"" }}" class="form-control me-2" placeholder="Search projects...">
+    <select name="technology" class="form-control me-2">
+        <option value="">All Technologies</option>
+        {% for tech in technologies %}
+            <option value="{{ tech }}" {% if tech == technology_filter %}selected{% endif %}>{{ tech }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<ul class="list-group">
+    {% for project in page_obj %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
             <a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a>
-            : {{ project.technology }}
-            {% comment %} <img src="{{ project.image.url }}" alt="{{ project.title }}" style="width: 50px; height: 50px;"> {% endcomment %}
+            <span class="badge bg-info text-dark">{{ project.technology }}</span>
         </li>
     {% endfor %}
 </ul>
 
-<div class="pagination">
-    <span class="step-links">
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            <li class="page-item"><a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if technology_filter %}&technology={{ technology_filter }}{% endif %}">&laquo; First</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if technology_filter %}&technology={{ technology_filter }}{% endif %}">Previous</a></li>
         {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
+        <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if technology_filter %}&technology={{ technology_filter }}{% endif %}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if technology_filter %}&technology={{ technology_filter }}{% endif %}">Last &raquo;</a></li>
         {% endif %}
-    </span>
-</div>
-
+    </ul>
+</nav>
 {% endblock content %}

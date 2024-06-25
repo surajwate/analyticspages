@@ -183,3 +183,44 @@ def test_project_form():
     assert form.is_valid()
     project = form.save()
     assert Project.objects.filter(title='Test Project').exists()
+
+
+@pytest.mark.django_db
+def test_search_query_retention(client):
+    Project.objects.create(
+        title='Bike Sharing',
+        description='A project on bike sharing.',
+        technology='Django',
+    )
+    Project.objects.create(
+        title='MNIST',
+        description='A project on MNIST dataset.',
+        technology='TensorFlow',
+    )
+
+    url = reverse('project_list')
+    response = client.get(url, {'q': 'MNIST'})
+    assert response.status_code == 200
+    assert 'MNIST' in response.content.decode()
+    assert 'value="MNIST"' in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_technology_filter_retention(client):
+    Project.objects.create(
+        title='Bike Sharing',
+        description='A project on bike sharing.',
+        technology='Python',
+    )
+    Project.objects.create(
+        title='MNIST',
+        description='A project on MNIST dataset.',
+        technology='TensorFlow',
+    )
+
+    url = reverse('project_list')
+    response = client.get(url, {'technology': 'Python'})
+    assert response.status_code == 200
+    assert 'Bike Sharing' in response.content.decode()
+    assert 'selected>Python</option>' in response.content.decode()
+    assert 'MNIST' not in response.content.decode()

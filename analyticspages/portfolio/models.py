@@ -10,6 +10,7 @@ class Project(models.Model):
     end_date = models.DateField(null=True, blank=True)
     github_link = models.URLField(max_length=200, null=True, blank=True)
     live_demo_link = models.URLField(max_length=200, null=True, blank=True)
+    result_summary = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ['start_date']
