@@ -32,10 +32,10 @@ jobs:
         python-version: 3.9
 
     - name: Set environment variables
-      run: echo "DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
-      env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        DEBUG: 0
+      run: |
+        echo "DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+        echo "DEBUG=0" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: |
