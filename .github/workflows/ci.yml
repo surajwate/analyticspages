@@ -21,16 +21,6 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DEBUG: 0
 
     steps:
     - name: Check out the repository
@@ -40,6 +30,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+
+    - name: Set environment variables
+      run: echo "DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DEBUG: 0
 
     - name: Install dependencies
       run: |
