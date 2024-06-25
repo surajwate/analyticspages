@@ -9,8 +9,27 @@
         <li>
             <a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a>
             : {{ project.technology }}
-            <img src="{{ project.image.url }}" alt="{{ project.title }}" style="width: 50px; height: 50px;">
+            {% comment %} <img src="{{ project.image.url }}" alt="{{ project.title }}" style="width: 50px; height: 50px;"> {% endcomment %}
         </li>
     {% endfor %}
-    </ul>
+</ul>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
 {% endblock content %}

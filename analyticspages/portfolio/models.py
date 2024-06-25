@@ -11,5 +11,8 @@ class Project(models.Model):
     github_link = models.URLField(max_length=200, null=True, blank=True)
     live_demo_link = models.URLField(max_length=200, null=True, blank=True)
 
+    class Meta:
+        ordering = ['start_date']
+
     def __str__(self):
         return self.title

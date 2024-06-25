@@ -27,6 +27,20 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Images
 images/
 
+# Environment variables
 .env
+
+# Notes
+notes.md
+
+# Docker
+*.env
+docker-compose.override.yml
+Dockerfile
+
+# Static files
+staticfiles/

@@ -5,6 +5,7 @@ from django.contrib.admin.sites import AdminSite
 from .admin import ProjectAdmin
 from django.contrib.auth.models import User
 from .forms import ProjectForm
+from django.core.paginator import Page
 
 # Test for creating a project instance and verifying its attributes
 @pytest.mark.django_db
@@ -26,6 +27,7 @@ def test_project_list_view(client):
     response = client.get(url)
     assert response.status_code == 200
     assert 'Projects' in response.content.decode()
+    assert isinstance(response.context['page_obj'], Page)  # Check if the context contains a `Page` object
 
 # `admin_site` fixture creates an instance of the `AdminSite` class
 @pytest.fixture
@@ -65,7 +67,9 @@ def test_static_files_served(client):
     url = reverse('project_list')   # Use the URL of a view that serves static files
     response = client.get(url)
     assert response.status_code == 200
-    assert 'style.css' in response.content.decode()  # Check if the CSS file is included in the response content
+    # assert 'style.css' in response.content.decode()  # Check if the CSS file is included in the response content
+    content = response.content.decode()
+    assert 'static/style.9d1218036146.css' in content or 'static/style.css' in content
 
 @pytest.mark.django_db
 def test_media_files_served(client, project):
