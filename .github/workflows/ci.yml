@@ -26,10 +26,10 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v2  # Use checkout action without node-version
+      uses: actions/checkout@v4  # Use checkout action without node-version
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
