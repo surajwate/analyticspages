@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin    # Import the `Login
 from django.views.generic import TemplateView   # Import the `TemplateView` class to create a view for user profile
 from .forms import ProjectForm
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q   # Import the `Q` object to perform complex queries on the database using logical operators
 
 # Function-based view to display a list of all projects
 def project_list(request):

@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - ci-fixed
   pull_request:
     branches:
       - main
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
   test:
@@ -21,38 +23,39 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DEBUG: 0
 
     steps:
-    - name: Check out the repository
-      uses: actions/checkout@v2
+      - name: Check out the repository
+        uses: actions/checkout@v4  
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
-    - name: Install dependencies
-      run: |
-        cd analyticspages
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Set environment variables
+        run: |
+          echo "DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "POSTGRES_HOST=localhost" >> $GITHUB_ENV
+          echo "POSTGRES_PORT=5432" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DEBUG=0" >> $GITHUB_ENV
 
-    - name: Apply migrations
-      run: |
-        cd analyticspages
-        python manage.py migrate
+      - name: Install dependencies
+        run: |
+          cd analyticspages
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run tests
-      run: |
-        cd analyticspages
-        pytest
+      - name: Apply migrations
+        run: |
+          cd analyticspages
+          python manage.py migrate
+
+      - name: Run tests
+        run: |
+          cd analyticspages
+          pytest
